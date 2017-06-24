@@ -14,7 +14,8 @@ text = 'message.txt'
 html = 'message.html'
 list =  nil
 frm  = 'postmaster@evil-admin.com'
-frnm = frm[/[^@]+/]
+frnm = frm.split("@")[0]
+helo = frm.split("@")[1]
 sbj  = 'This Is A Test'
 thrd = 1
 tls  = false
@@ -26,7 +27,7 @@ log  = '/tmp/mailer.log'
 # Arguements
 opt_parser = OptionParser.new do |opts|
   opts.banner = "Usage: mailer.rb [options]"
-  opts.separator ""  
+  opts.separator ""
   opts.on("-t", "--to user@domain.tld", "Email address to send to.", String) { |val| user = val }
   opts.on("-l", "--list list.txt", "List of Email address to send to.", String) { |val| list = val }
   opts.on("-f", "--from user@domain.tld", "Email address to send as. Default: #{frm}", String) { |val| frm = val }
@@ -41,6 +42,7 @@ opt_parser = OptionParser.new do |opts|
   opts.on("-g", "--log file.log", "Write to log a file. Default: #{log}", String) { |val| log = val }
   opts.on("-U", "--user username", "SMTP auth username", String) { |val| usr = val }
   opts.on("-P", "--pass username", "SMTP auth password", String) { |val| pass = val }
+  opts.on("-o", "--helo host.domain.tld", "HELO string, ussually a hostname", String) { |val| helo = val }
   opts.on("-L", "--tls", "Enable STARTTLS.") do
     tls = true
   end
@@ -61,7 +63,8 @@ end
 begin
   logger = Logger.new(STDOUT)
   logger = Logger.new(log)
-  logger.level = Logger::DEBUG
+  logger.level = Logger::INFO
+  #logger.level = Logger::DEBUG
 rescue => e
   puts "Error: #{e.message}"
   exit
@@ -76,10 +79,11 @@ end
 # Host defaults to send
 if usr == nil && pass == nil
   Mail.defaults do
-    delivery_method :smtp, { 
+    delivery_method :smtp, {
       :address              => host,
       :port                 => port,
-      :enable_starttls_auto => tls 
+      :domain               => helo,
+      :enable_starttls_auto => tls
     }
   end
   logger.debug("Mail Defaults: SMTP Host - #{host} SMTP Port - #{port} TLS Enabled - #{tls}")
@@ -95,13 +99,14 @@ else
     exit
   end
   Mail.defaults do
-    delivery_method :smtp, { 
+    delivery_method :smtp, {
       :address              => host,
       :port                 => port,
       :user_name            => usr,
       :password             => pass,
       :authentication       => auth,
-      :enable_starttls_auto => tls 
+      :domain               => helo,
+      :enable_starttls_auto => tls
     }
   end
   logger.debug("Mail Defaults: SMTP Host - #{host} SMTP Port - #{port} Auth User - #{usr} Password - #{pass} Auth Type - #{auth} TLS Enabled - #{tls}")
@@ -143,7 +148,7 @@ end
 # Let's send some email!
 puts "Begin processing send queue."
 logger.info("Begin processing send queue.")
-Parallel.each(rcpt, in_threads: thrd) do |user|  
+Parallel.each(rcpt, in_threads: thrd) do |user|
   time = Time.new
   localpart = user[/[^@]+/]
   lprcpt = "#{localpart.chomp} <#{user.chomp}>"
