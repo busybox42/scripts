@@ -5,7 +5,6 @@ require 'net/smtp'
 require 'net/pop'
 require 'net/imap'
 
-
 # Lets make some options yo!
 options = {}
 
@@ -37,11 +36,9 @@ Subject: Test
 This is a test message.
 END_OF_MESSAGE
 
-
 # Let's run a check!
 puts "#{check} running!"
 if check == "smtp"
-
     puts "Sending email!"
     puts "--------------"
     if !options[:source_user]
@@ -65,7 +62,6 @@ if check == "smtp"
         end
     end
 elsif check == "pop"
-
     puts "Checking POP3"
     puts "-------------"
     Net::POP3.start(options[:source_host], 110,
@@ -80,9 +76,7 @@ elsif check == "pop"
             puts "#{pop.mails.size} message in inbox."
         end
     end
-
-elsif check == "imap"
-        
+elsif check == "imap" 
     puts "Checking IMAP"
     puts "-------------"
     imap = Net::IMAP.new(options[:source_host])
@@ -92,9 +86,7 @@ elsif check == "imap"
         envelope = imap.fetch(message_id, "ENVELOPE")[0].attr["ENVELOPE"]
         puts "#{envelope.from[0].mailbox}@#{envelope.from[0].host}: \t#{envelope.subject}"
     end
-
 elsif check == "all"
-
     puts "Sending email!"
     puts "--------------"
     if !options[:source_user]
@@ -107,7 +99,6 @@ elsif check == "all"
             smtp.send_message msgstr, options[:source_from], options[:source_to]
         end
     end
-
     sleep 2
     puts""
     puts "Checking POP3"
@@ -124,7 +115,6 @@ elsif check == "all"
             puts "#{pop.mails.size} message in inbox."
         end
     end
-    
     puts ""
     puts "Checking IMAP"
     puts "-------------"
@@ -135,8 +125,6 @@ elsif check == "all"
         envelope = imap.fetch(message_id, "ENVELOPE")[0].attr["ENVELOPE"]
         puts "#{envelope.from[0].mailbox}@#{envelope.from[0].host}: \t#{envelope.subject}"
     end
-
 else
     puts "Please specify a check to run."    
-
 end
