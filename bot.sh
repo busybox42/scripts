@@ -118,15 +118,16 @@ case $1 in
 
   *)
     echo "  -=< PokemonGo Bot Tmux Session>=-"
-    echo "-------------------------------------"
-    echo "| Options:                          |"
-    echo "-------------------------------------"
-    echo "| start  - Starts pokicly and http  |"
-    echo "|          web server in tmux.      |"
-    echo "| random - Start a random bot.      |"
-    echo "| stop   - Stop PokemonGo Bot.      |"
-    echo "| status - Show running status.     |"
-    echo "| attach - Attach to tmux session.  |"    
-    echo "-------------------------------------"
+    echo "--------------------------------------"
+    echo "| Options:                           |"
+    echo "--------------------------------------"
+    echo "| start   - Starts pokicly and http  |"
+    echo "|           web server in tmux.      |"
+    echo "| random  - Start a random bot.      |"
+    echo "| stop    - Stop PokemonGo Bot.      |"
+    echo "| status  - Show running status.     |"
+    echo "| attach  - Attach to tmux session.  |"    
+    echo "| account - Start accout or list.    |"    
+    echo "--------------------------------------"
     ;;
 esac
