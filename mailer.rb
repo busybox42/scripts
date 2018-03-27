@@ -230,10 +230,9 @@ Parallel.each(rcpt, in_threads: thrd) do |user|
     rescue => e
       puts "Unable send from #{frm.chomp} to #{user.chomp} - Error: \"#{e.message.chomp}\""
       logger.error("Unable send from #{frm.chomp} to #{user.chomp} - Error: \"#{e.message.chomp}\"")
-  end
-  if !defined?(e.message)
-    puts "Message sent from #{frm.chomp} to #{user.chomp} - Subject: \"#{sbj.chomp}\""
-    logger.info("Message sent from #{frm.chomp} to #{user.chomp} - Subject: \"#{sbj.chomp}\"")
+    else
+      puts "Message sent from #{frm.chomp} to #{user.chomp} - Subject: \"#{sbj.chomp}\""
+      logger.info("Message sent from #{frm.chomp} to #{user.chomp} - Subject: \"#{sbj.chomp}\"")
   end
 end
 
